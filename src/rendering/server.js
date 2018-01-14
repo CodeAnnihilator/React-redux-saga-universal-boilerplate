@@ -11,8 +11,9 @@ import { createMemoryHistory } from 'history'
 
 import configureStore from '../store/configureStoreDevelopment'
 import Routes from '../routes'
-import HtmlComponent from '../helpers/HtmlComponent'
 import rootSaga from '../rootSaga'
+
+import Html from './helpers/Html'
 
 const pretty = new PrettyError()
 const app = new express()
@@ -35,7 +36,7 @@ app.use((req, res) => {
         <Routes />
       </StaticRouter>
     )
-    const htmlComponent = <HtmlComponent assets={assets} component={rootComponent} store={store} />
+    const htmlComponent = <Html assets={assets} component={rootComponent} store={store} />
     const renderedDomString = ReactDOMServer.renderToString(htmlComponent)
     res.status(200).send(`<!doctype html>\n ${renderedDomString}`)
   })
@@ -43,7 +44,7 @@ app.use((req, res) => {
 
 server.listen(3000, err => {
   if (err) {
-    return console.error(err)
+    console.error(err)
   } else {
     console.info('App is waiting for requests on http://%s:%s in a browser', 'localhost', 3000)
   }

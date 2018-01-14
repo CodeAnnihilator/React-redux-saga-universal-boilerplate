@@ -1,33 +1,33 @@
 import React from 'react'
 import merge from 'lodash/merge'
-import { render } from 'react-dom'
 import createHistory from 'history/createBrowserHistory'
-
-const history = createHistory()
-
-import Routes from '../routes'
+import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
-import RootComponent from '../components/Root/RootComponent'
+import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'react-router-redux'
 
 import configureStore from '../store/configureStoreDevelopment'
 import getRoutes from '../routes'
 import rootSaga from '../rootSaga'
 
-async function renderClient() {
-  let initialState = window.__data
-  const dest = document.getElementById('content')
-  const store = configureStore(history, initialState)
-  store.runSaga(rootSaga)
-  render(
-    <BrowserRouter>
-      <Routes />
-    </BrowserRouter>,
-    dest
-  )
-  if (process.env.NODE_ENV !== 'production') {
-    window.React = React // enable debugger
-  }
-}
+import Routes from '../routes'
 
-renderClient()
+const history = createHistory()
+
+let initialState = window.__data
+const store = configureStore(history, initialState)
+store.runSaga(rootSaga)
+render(
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
+    </ConnectedRouter>
+  </Provider>,
+  document.getElementById('content')
+)
+if (process.env.NODE_ENV !== 'production') {
+  window.React = React // enable debugger
+}
